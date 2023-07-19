@@ -32,20 +32,16 @@ jobs:
       sonarQubeRunAnalysis: false
 
 
-  - task: PublishPipelineArtifact@1
+  - task: CopyFiles@2
     inputs:
-      targetPath: './complete/target'
-      artifact: 'java-app'
-      publishLocation: 'pipeline'
+      SourceFolder: './complete/target'
+      Contents: '**/*.jar'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-- job: Deploy
-  steps:
-  - task: DownloadPipelineArtifact@2
+  - task: PublishBuildArtifacts@1
     inputs:
-      buildType: 'current'
-      artifactName: 'java-app'
-      itemPattern: '*.jar'
-      targetPath: '$(Pipeline.Workspace)'
-      
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    displayName: 'Publish Artifact'
+
 
 

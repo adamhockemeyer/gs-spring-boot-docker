@@ -43,5 +43,13 @@ jobs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Publish Artifact'
 
-
+- job: Deploy
+  steps:
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      azureSubscription: 'app-svc-connection-spring'
+      appType: 'webAppLinux'
+      WebAppName: 'ahock-spring'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.jar'
 

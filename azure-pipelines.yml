@@ -9,30 +9,42 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
+jobs:
+- job: Build
+  steps:
 
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '17'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled'
 
-- task: Maven@4
+  - task: Maven@4
 
-  inputs:
-    mavenPomFile: './complete/pom.xml'
-    goals: 'clean install'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-    mavenVersionOption: 'Default'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: false
+    inputs:
+      mavenPomFile: './complete/pom.xml'
+      goals: 'clean install'
+      publishJUnitResults: false
+      javaHomeOption: 'JDKVersion'
+      mavenVersionOption: 'Default'
+      mavenAuthenticateFeed: false
+      effectivePomSkip: false
+      sonarQubeRunAnalysis: false
 
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: './complete/target'
-    artifact: 'java-app'
-    publishLocation: 'pipeline'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: './complete/target'
+      artifact: 'java-app'
+      publishLocation: 'pipeline'
+
+- job: Deploy
+  steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      artifactName: 'java-app'
+      itemPattern: '*.jar'
+      targetPath: '$(Pipeline.Workspace)'
+
 

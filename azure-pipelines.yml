@@ -43,21 +43,27 @@ jobs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     displayName: 'Publish Artifact'
 
-- job: Deploy
-  steps:
-  - task: DownloadBuildArtifacts@1
-    inputs:
-      buildType: 'current'
-      downloadType: 'single'
-      artifactName: 'drop'
-      itemPattern: '**/*.jar'
-      downloadPath: '$(Build.ArtifactStagingDirectory)'
+- deployment: Deploy
+  displayName: 'Deploy to Prod'
+  environment: 'Prod'
+  dependsOn: Build
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'drop'
+            itemPattern: '**/*.jar'
+            downloadPath: '$(Build.ArtifactStagingDirectory)'
 
-  - task: AzureRmWebAppDeployment@4
-    inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'azure-svc-connection-spring'
-      appType: 'webAppLinux'
-      WebAppName: 'ahock-spring'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.jar'
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'azure-svc-connection-spring'
+            appType: 'webAppLinux'
+            WebAppName: 'ahock-spring'
+            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.jar'
 

@@ -51,5 +51,5 @@ jobs:
       azureSubscription: 'azure-svc-connection-spring'
       appType: 'webAppLinux'
       WebAppName: 'ahock-spring'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.jar'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/*.jar'
 

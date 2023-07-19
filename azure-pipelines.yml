@@ -32,6 +32,7 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './complete/target/*.jar'
+    targetPath: './complete/target'
     artifact: 'java-app'
     publishLocation: 'pipeline'
+

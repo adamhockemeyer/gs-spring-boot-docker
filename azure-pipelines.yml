@@ -45,13 +45,22 @@ jobs:
 
 - job: Deploy
   steps:
-  - script: 'ls $(Build.ArtifactStagingDirectory)'
+  - task: DownloadBuildArtifacts@1
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'drop'
+      itemPattern: '*.jar'
+      downloadPath: '$(System.ArtifactsDirectory)'
+
+  - script: 'ls $(Build.ArtifactsDirectory)'
     displayName: 'List Contents of Artifact Staging Directory'
+
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
       azureSubscription: 'azure-svc-connection-spring'
       appType: 'webAppLinux'
       WebAppName: 'ahock-spring'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/*.jar'
+      packageForLinux: '$(Build.ArtifactDirectory)/*.jar'
 

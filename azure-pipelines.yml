@@ -45,6 +45,8 @@ jobs:
 
 - job: Deploy
   steps:
+  - script: 'ls $(Build.ArtifactStagingDirectory)'
+    displayName: 'List Contents of Artifact Staging Directory'
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
